@@ -76,8 +76,8 @@ export const MARGEN_MINIMO = 20;
 // Pega aquí los datos de Supabase → Project Settings → API. La clave pública
 // (anon / publishable) puede estar en el código: lo que protege los datos son
 // las políticas de supabase.sql. NUNCA pegues aquí la clave "service_role".
-export const SUPABASE_URL = "";
-export const SUPABASE_CLAVE_PUBLICA = "";
+export const SUPABASE_URL = "https://lwoqfdimpbboktdygukh.supabase.co";
+export const SUPABASE_CLAVE_PUBLICA = "sb_publishable_LdxVx_j9mCYhQJ2f52LquQ_IiFtL5uz";
 // Cada usuario entra con su nombre; en Supabase existe como <usuario>@<DOMINIO_USUARIOS>
 export const DOMINIO_USUARIOS = "ciclovictoria.app";
 
