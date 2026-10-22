@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CicloVictoria · Ingresar</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@500;700;800&display=swap">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/componentes.css">
+  <link rel="stylesheet" href="css/animaciones.css">
+  <link rel="stylesheet" href="css/paginas.css">
+  <script>
+    try { if (JSON.parse(localStorage.getItem("cv_tema")) === "oscuro") document.documentElement.dataset.tema = "oscuro"; } catch (e) {}
+  </script>
+</head>
+<body>
+  <main class="pagina-login">
+    <!-- Panel negro con el logo que se dibuja -->
+    <section class="login-marca" aria-label="CicloVictoria">
+      <div id="logo-animado"></div>
+      <div>
+        <span class="logo-texto"><span class="regular">Ciclo</span><span class="negrita">Victoria</span></span>
+        <p class="login-lema" style="margin-top:10px">Rueda con confianza</p>
+      </div>
+    </section>
+
+    <!-- Formulario -->
+    <section class="login-formulario">
+      <form class="login-caja" id="form-login" novalidate>
+        <div>
+          <h1>Ingresar</h1>
+          <p class="texto-suave" style="margin-top:6px">Panel de administración de CicloVictoria.</p>
+        </div>
+
+        <div class="campo-flotante">
+          <input id="usuario" name="usuario" type="text" placeholder=" " autocomplete="username" autocapitalize="none" spellcheck="false" required>
+          <label for="usuario">Usuario</label>
+        </div>
+
+        <div class="campo-flotante con-boton">
+          <input id="contrasena" name="contrasena" type="password" placeholder=" " autocomplete="current-password" required>
+          <label for="contrasena">Contraseña</label>
+          <button type="button" class="boton-icono" id="ver-contrasena" aria-label="Mostrar contraseña" aria-pressed="false"></button>
+        </div>
+
+        <div class="login-opciones">
+          <label class="casilla"><input type="checkbox" id="recordarme"> Recordarme</label>
+          <button type="button" class="enlace-simple" id="ir-recuperar">¿Olvidaste tu contraseña?</button>
+        </div>
+
+        <p class="login-error" id="login-error" role="alert" aria-live="assertive"></p>
+
+        <button type="submit" class="boton boton-acento boton-bloque" id="boton-ingresar">Ingresar</button>
+
+        <a class="enlace-simple" href="index.html" style="align-self:center">Ver catálogo sin iniciar sesión</a>
+      </form>
+
+      <!-- Recuperar contraseña con el código de recuperación -->
+      <form class="login-caja" id="form-recuperar" novalidate hidden>
+        <div>
+          <h1>Recuperar contraseña</h1>
+          <p class="texto-suave" style="margin-top:6px">Escribe tu usuario, tu código de recuperación y la contraseña nueva.</p>
+        </div>
+
+        <div class="campo-flotante">
+          <input id="rec-usuario" type="text" placeholder=" " autocomplete="username" autocapitalize="none" spellcheck="false" required>
+          <label for="rec-usuario">Usuario</label>
+        </div>
+
+        <div class="campo-flotante">
+          <input id="rec-codigo" type="text" placeholder=" " autocomplete="off" autocapitalize="characters" spellcheck="false" required>
+          <label for="rec-codigo">Código de recuperación (XXXX-XXXX-XXXX)</label>
+        </div>
+
+        <div class="campo-flotante">
+          <input id="rec-nueva" type="password" placeholder=" " autocomplete="new-password" minlength="6" required>
+          <label for="rec-nueva">Nueva contraseña</label>
+        </div>
+
+        <div class="campo-flotante">
+          <input id="rec-repetir" type="password" placeholder=" " autocomplete="new-password" required>
+          <label for="rec-repetir">Repite la nueva contraseña</label>
+        </div>
+
+        <p class="login-error" id="rec-error" role="alert" aria-live="assertive"></p>
+
+        <button type="submit" class="boton boton-acento boton-bloque" id="boton-recuperar">Cambiar contraseña</button>
+
+        <button type="button" class="enlace-simple" id="volver-login" style="align-self:center">Volver a Ingresar</button>
+      </form>
+    </section>
+  </main>
+
+  <script type="module" src="js/login.js"></script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+/* =========================================================
+   CicloVictoria · animaciones.css
+   Keyframes y transiciones. Todo se desactiva con
+   prefers-reduced-motion al final del archivo.
+   ========================================================= */
+
+/* Entrada de secciones al cambiar de pestaña */
+@keyframes entrar-seccion {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+.seccion-entrando { animation: entrar-seccion 320ms cubic-bezier(.2,.8,.2,1) both; }
+
+/* Aparición escalonada de tarjetas (--i lo asigna JS, máximo 12) */
+@keyframes aparecer {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+.aparecer {
+  animation: aparecer 360ms cubic-bezier(.2,.8,.2,1) both;
+  animation-delay: calc(var(--i, 0) * 40ms);
+}
+
+/* Brillo de los skeletons */
+@keyframes brillo {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+.skeleton { animation: brillo 1.4s linear infinite; }
+
+/* Toasts: entran desde abajo a la derecha, salen con fade */
+@keyframes toast-entrar {
+  from { opacity: 0; transform: translate(24px, 16px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes toast-salir {
+  to { opacity: 0; transform: translateY(8px); }
+}
+.toast { animation: toast-entrar 280ms cubic-bezier(.2,.8,.2,1) both; }
+.toast.saliendo { animation: toast-salir 220ms ease forwards; }
+
+/* Modales: fondo con fade y caja con escala .96 → 1 */
+@keyframes fondo-entrar { from { opacity: 0; } to { opacity: 1; } }
+@keyframes modal-entrar {
+  from { opacity: 0; transform: scale(.96) translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+.modal-fondo { animation: fondo-entrar 200ms ease both; }
+.modal { animation: modal-entrar 240ms cubic-bezier(.2,.8,.2,1) both; }
+.modal-fondo.cerrando { animation: fondo-entrar 160ms ease reverse forwards; }
+.modal-fondo.cerrando .modal { animation: modal-entrar 160ms ease reverse forwards; }
+
+/* Pulso suave para "Agotado" y alertas críticas */
+@keyframes pulso {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(217,58,58,.35); }
+  50%      { box-shadow: 0 0 0 6px rgba(217,58,58,0); }
+}
+.chip-peligro.pulso, .pulso { animation: pulso 2.2s ease-in-out infinite; }
+
+/* Sacudida suave del formulario de login */
+@keyframes sacudir {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(7px); }
+  60% { transform: translateX(-5px); }
+  80% { transform: translateX(3px); }
+}
+.sacudir { animation: sacudir 420ms ease; }
+
+/* Logo del login: la bicicleta se dibuja trazo a trazo */
+@keyframes dibujar { to { stroke-dashoffset: 0; } }
+.logo-animado .trazo {
+  stroke-dasharray: var(--largo, 400);
+  stroke-dashoffset: var(--largo, 400);
+  animation: dibujar 1.6s cubic-bezier(.6,.1,.3,1) forwards;
+  animation-delay: var(--retraso, 0s);
+}
+@keyframes girar { to { transform: rotate(360deg); } }
+.logo-animado .rueda {
+  transform-box: fill-box; transform-origin: center;
+  animation: girar 9s linear infinite;
+  animation-delay: 1.6s;
+}
+
+/* Carrusel de marcas: desplazamiento infinito que se pausa con el mouse */
+@keyframes desplazar-marcas {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.carrusel-marcas-pista { animation: desplazar-marcas var(--duracion, 40s) linear infinite; }
+.carrusel-marcas:hover .carrusel-marcas-pista,
+.carrusel-marcas:focus-within .carrusel-marcas-pista { animation-play-state: paused; }
+
+/* Panel lateral deslizable (filtros en móvil) */
+.panel-lateral { transition: transform 280ms cubic-bezier(.2,.8,.2,1); }
+
+/* ---------- Movimiento reducido ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .logo-animado .trazo { stroke-dashoffset: 0; }
+  .tarjeta-producto:hover { transform: none; }
+  .tarjeta-producto:hover .tp-imagen img { transform: none; }
+  .carrusel-marcas-pista { animation: none !important; }
+}

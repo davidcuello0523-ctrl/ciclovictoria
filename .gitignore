@@ -1,0 +1,11 @@
+# El Excel tiene costos, cantidades y proveedores: NUNCA se publica
+*.xlsx
+*.xls
+# Bitácora interna de desarrollo (cifras del negocio)
+PROGRESO.md
+# Sistema
+.DS_Store
+Thumbs.db
+.vscode/
+# Hashes de los códigos de recuperación (se cargan a mano en Supabase)
+supabase-codigos.sql

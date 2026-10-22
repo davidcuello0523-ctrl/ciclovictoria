@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CicloVictoria · Panel de administración</title>
+  <meta name="robots" content="noindex">
+  <script>
+    // Protección temprana: sin administrador no se pinta nada y se va al login
+    (function () {
+      var sesion = null;
+      try { sesion = JSON.parse(sessionStorage.getItem("cv_sesion")) || JSON.parse(localStorage.getItem("cv_sesion")); } catch (e) {}
+      if (!sesion || sesion.rol !== "admin") location.replace("login.html");
+      try { if (JSON.parse(localStorage.getItem("cv_tema")) === "oscuro") document.documentElement.dataset.tema = "oscuro"; } catch (e) {}
+    })();
+  </script>
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@500;700;800&display=swap">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/componentes.css">
+  <link rel="stylesheet" href="css/animaciones.css">
+  <link rel="stylesheet" href="css/paginas.css">
+</head>
+<body class="pagina-admin">
+  <a class="solo-lector" href="#contenido">Saltar al contenido</a>
+
+  <div class="barra-superior">
+    <div class="contenedor">
+      <span><span class="texto-largo">Panel de administración</span><span class="texto-corto">Admin</span> <span class="punto" aria-hidden="true">●</span></span>
+      <a href="index.html" class="enlace-barra" aria-label="Ver catálogo público"><span class="texto-largo">Ver catálogo público </span><span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+
+  <header class="header" id="header">
+    <div class="contenedor">
+      <div id="logo"></div>
+      <nav class="nav" id="nav" aria-label="Secciones del panel"><ul id="menu"></ul></nav>
+      <div class="caja-usuario">
+        <button type="button" class="boton-icono boton-buscar-global" id="boton-buscar" aria-label="Buscar en todo (Ctrl + K)" title="Buscar (Ctrl + K)"></button>
+        <!-- Ficha de usuario y menú de cuenta (los arma header.js; el menú nace oculto) -->
+        <div id="ficha-usuario"></div>
+        <button type="button" class="boton-icono boton-hamburguesa" id="boton-menu" aria-label="Abrir menú" aria-expanded="false"></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <!-- ================= INICIO ================= -->
+    <section data-seccion="inicio" id="seccion-inicio" class="contenedor seccion" aria-label="Inicio"></section>
+
+    <!-- ================= CATÁLOGO (INVENTARIO) ================= -->
+    <section data-seccion="catalogo" id="seccion-catalogo" class="contenedor seccion" hidden aria-labelledby="titulo-inventario">
+      <div class="cabecera-seccion">
+        <div>
+          <h1 id="titulo-inventario" style="font-size:clamp(24px,3.4vw,34px)">Inventario</h1>
+          <p id="resumen-origen"></p>
+        </div>
+        <div class="barra-herramientas">
+          <button type="button" class="boton boton-acento" id="nuevo-producto">+ Nuevo producto</button>
+          <button type="button" class="boton boton-secundario" id="recargar-excel"></button>
+          <button type="button" class="boton boton-secundario" id="exportar-excel"></button>
+          <button type="button" class="boton boton-secundario" id="escanear-inventario"></button>
+          <button type="button" class="boton boton-secundario" id="escaneo-rapido"></button>
+          <button type="button" class="boton boton-secundario" id="imprimir-etiquetas"></button>
+          <button type="button" class="boton boton-secundario" id="exportar-publico" title="Genera data/catalogo.json para publicar"></button>
+        </div>
+      </div>
+
+      <div class="barra-resultados">
+        <div class="segmentado" role="group" aria-label="Línea" id="filtro-linea">
+          <button type="button" data-valor="Todas" aria-pressed="true">Todas</button>
+          <button type="button" data-valor="Bicicleta" aria-pressed="false">Bicicletas</button>
+          <button type="button" data-valor="Moto" aria-pressed="false">Motos</button>
+        </div>
+        <div class="indicador-espacio" id="indicador-espacio" title="Espacio usado en el navegador (localStorage)">
+          <span>Almacenamiento</span>
+          <div class="barra-espacio" role="progressbar" aria-label="Espacio usado" aria-valuemin="0" aria-valuemax="100"><span></span></div>
+          <span class="texto-espacio"></span>
+        </div>
+      </div>
+
+      <div class="buscadores-catalogo" role="search">
+        <div class="buscador">
+          <label for="buscar-texto" class="solo-lector">Buscar por descripción</label>
+          <input id="buscar-texto" type="search" placeholder="Buscar por descripción" autocomplete="off">
+          <button class="lupa" type="button" aria-label="Buscar por descripción"></button>
+        </div>
+        <div class="buscador">
+          <label for="buscar-referencia" class="solo-lector">Buscar por referencia</label>
+          <input id="buscar-referencia" type="search" placeholder="Buscar por referencia" autocomplete="off">
+          <button class="lupa" type="button" aria-label="Buscar por referencia"></button>
+        </div>
+      </div>
+
+      <div class="layout-catalogo">
+        <aside class="sidebar-filtros panel-lateral" id="sidebar-filtros" aria-label="Filtros">
+          <div class="sidebar-cabecera">
+            <h2 style="font-size:16px">Filtros</h2>
+            <button type="button" class="boton-icono" id="cerrar-filtros" aria-label="Cerrar filtros"></button>
+          </div>
+          <div class="tarjeta bloque-filtro">
+            <h3>Existencia</h3>
+            <div class="segmentado" role="group" aria-label="Existencia" id="filtro-existencia">
+              <button type="button" data-valor="con" aria-pressed="false">Con existencia</button>
+              <button type="button" data-valor="todos" aria-pressed="true">Todos</button>
+            </div>
+            <div class="campo"><label for="filtro-estado">Estado de stock</label>
+              <select id="filtro-estado" class="entrada" data-filtro="estado">
+                <option value="">Todos los estados</option>
+                <option value="normal">Disponible</option>
+                <option value="bajo">Stock bajo</option>
+                <option value="agotado">Agotado</option>
+                <option value="reabastecer">Requiere reabastecimiento</option>
+              </select>
+            </div>
+            <div class="campo"><label for="filtro-margen">Margen</label>
+              <select id="filtro-margen" class="entrada" data-filtro="margen">
+                <option value="">Todos los márgenes</option>
+                <option value="bajo">Margen bajo (bajo el mínimo)</option>
+                <option value="sin-costo">Sin costo registrado</option>
+              </select>
+            </div>
+            <div class="campo"><label for="filtro-visibilidad">Visibilidad</label>
+              <select id="filtro-visibilidad" class="entrada" data-filtro="visibilidad">
+                <option value="">Visibles y ocultos</option>
+                <option value="visibles">Solo visibles</option>
+                <option value="ocultos">Solo ocultos</option>
+              </select>
+            </div>
+          </div>
+          <div class="tarjeta bloque-filtro">
+            <h3>Filtrar por</h3>
+            <div class="campo"><label for="filtro-categoria">Categoría</label><select id="filtro-categoria" class="entrada" data-filtro="categoria" data-opciones="categoria"></select></div>
+            <div class="campo"><label for="filtro-marca">Marca</label><select id="filtro-marca" class="entrada" data-filtro="marca" data-opciones="marca"></select></div>
+            <div class="campo"><label for="filtro-proveedor">Proveedor</label><select id="filtro-proveedor" class="entrada" data-filtro="proveedor"></select></div>
+            <div class="campo"><label for="filtro-compat">Compatibilidad</label><select id="filtro-compat" class="entrada" data-filtro="compat" data-opciones="compatibilidad"></select></div>
+          </div>
+          <div class="tarjeta bloque-filtro">
+            <label class="interruptor"><input type="checkbox" id="permitir-varias"><span class="pista" aria-hidden="true"></span>Permitir varias abiertas</label>
+            <button type="button" class="boton boton-secundario boton-pequeno" id="limpiar-filtros">Limpiar filtros</button>
+          </div>
+        </aside>
+        <div class="fondo-panel" id="fondo-panel"></div>
+
+        <div>
+          <div class="barra-resultados">
+            <div class="grupo">
+              <button type="button" class="boton boton-secundario boton-pequeno boton-filtros-movil" id="abrir-filtros" aria-controls="sidebar-filtros">Filtros</button>
+              <span class="contador-resultados" id="contador-resultados" aria-live="polite"></span>
+            </div>
+            <div class="grupo">
+              <label for="orden" class="etiqueta">Ordenar</label>
+              <select id="orden" class="entrada" style="width:auto">
+                <option value="az">Nombre A-Z</option>
+                <option value="za">Nombre Z-A</option>
+                <option value="precio-desc">Precio: mayor a menor</option>
+                <option value="precio-asc">Precio: menor a mayor</option>
+                <option value="stock-desc">Stock: mayor a menor</option>
+                <option value="stock-asc">Stock: menor a mayor</option>
+                <option value="valor-desc">Valor en inventario</option>
+                <option value="margen-asc">Margen: menor a mayor</option>
+                <option value="margen-desc">Margen: mayor a menor</option>
+                <option value="recientes">Modificados recientemente</option>
+              </select>
+            </div>
+          </div>
+          <div class="lista-productos" id="lista-inventario"></div>
+          <div class="cargar-mas"><button type="button" class="boton boton-secundario" id="cargar-mas" hidden>Cargar más</button></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Las demás secciones las crea admin.js (se completan en las fases 2, 3 y 4) -->
+    <div id="secciones-extra"></div>
+  </main>
+
+  <!-- SheetJS: leer y exportar Excel -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <!-- jsPDF + autotable: PDF de cotizaciones -->
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
+  <!-- QR (generar), html5-qrcode (escanear, respaldo de BarcodeDetector) y Chart.js (estadísticas) -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>

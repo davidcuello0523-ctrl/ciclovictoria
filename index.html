@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CicloVictoria · Catálogo</title>
+  <meta name="description" content="Catálogo de bicicletas, repuestos y accesorios de CicloVictoria. Consulta la disponibilidad en línea.">
+  <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800&display=swap">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/componentes.css">
+  <link rel="stylesheet" href="css/animaciones.css">
+  <link rel="stylesheet" href="css/paginas.css">
+  <script>
+    // Aplica el tema guardado antes de pintar para evitar parpadeo
+    try { if (JSON.parse(localStorage.getItem("cv_tema")) === "oscuro") document.documentElement.dataset.tema = "oscuro"; } catch (e) {}
+  </script>
+</head>
+<body>
+  <a class="solo-lector" href="#contenido">Saltar al contenido</a>
+
+  <div class="barra-superior">
+    <div class="contenedor">
+      <span>Bicicletas · Repuestos · Accesorios · Taller <span class="punto" aria-hidden="true">●</span></span>
+      <span class="ocultable-barra">Consulta la disponibilidad en línea</span>
+    </div>
+  </div>
+
+  <header class="header" id="header">
+    <div class="contenedor">
+      <div id="logo"></div>
+      <nav class="nav" id="nav" aria-label="Principal">
+        <ul>
+          <li><a class="nav-enlace" href="#inicio" data-seccion="inicio">Inicio</a></li>
+          <li><a class="nav-enlace" href="#catalogo" data-seccion="catalogo">Catálogo</a></li>
+        </ul>
+      </nav>
+      <div class="caja-usuario">
+        <button type="button" class="boton-icono boton-buscar-global" id="boton-buscar" aria-label="Buscar productos (Ctrl + K)" title="Buscar (Ctrl + K)"></button>
+        <button type="button" class="boton-icono ocultable" id="boton-tema" aria-label="Cambiar tema"></button>
+        <a class="boton boton-primario boton-pequeno" id="boton-ingresar" href="login.html" aria-label="Ingresar"><span class="texto-ingresar">Ingresar</span></a>
+        <button type="button" class="boton-icono boton-hamburguesa" id="boton-menu" aria-label="Abrir menú" aria-expanded="false"></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <!-- ================= INICIO ================= -->
+    <section id="seccion-inicio" data-seccion="inicio" aria-labelledby="titulo-hero">
+      <div class="hero">
+        <div class="contenedor">
+          <div>
+            <p class="hero-etiqueta">Bicicletas · Repuestos · Taller</p>
+            <h1 id="titulo-hero">Ciclo<span>Victoria</span></h1>
+            <p class="hero-texto">Consulta qué tenemos disponible en el local: bicicletas, repuestos y accesorios, y también productos para moto.</p>
+            <form class="hero-buscadores" id="form-hero" role="search">
+              <div class="buscador">
+                <label for="hero-descripcion" class="solo-lector">Buscar por descripción</label>
+                <input id="hero-descripcion" type="search" placeholder="Buscar por descripción" autocomplete="off">
+                <button class="lupa" type="submit" aria-label="Buscar por descripción" data-tipo="texto"></button>
+              </div>
+              <div class="buscador">
+                <label for="hero-referencia" class="solo-lector">Buscar por referencia</label>
+                <input id="hero-referencia" type="search" placeholder="Buscar por referencia" autocomplete="off">
+                <button class="lupa" type="submit" aria-label="Buscar por referencia" data-tipo="referencia"></button>
+              </div>
+            </form>
+            <div class="hero-accesos">
+              <button type="button" class="boton boton-acento" data-ir-linea="Bicicleta">Bicicletas</button>
+              <button type="button" class="boton boton-secundario" data-ir-linea="Moto">Motos</button>
+              <button type="button" class="boton boton-secundario boton-escanear" id="escanear-hero">Escanear etiqueta</button>
+            </div>
+          </div>
+          <div class="hero-ilustracion" id="hero-ilustracion" aria-hidden="true"></div>
+        </div>
+      </div>
+
+      <div class="carrusel-marcas" id="carrusel-marcas" aria-label="Marcas">
+        <div class="carrusel-marcas-pista" id="pista-marcas"></div>
+      </div>
+
+      <div class="contenedor">
+        <h2 class="subtitulo-seccion">Productos destacados</h2>
+        <div class="lista-productos" id="lista-destacados" aria-live="polite"></div>
+
+        <h2 class="subtitulo-seccion">Categorías</h2>
+        <div class="grilla-categorias" id="grilla-categorias"></div>
+      </div>
+    </section>
+
+    <!-- ================= CATÁLOGO ================= -->
+    <section id="seccion-catalogo" data-seccion="catalogo" hidden aria-labelledby="titulo-catalogo">
+      <div class="contenedor seccion">
+        <div class="cabecera-seccion">
+          <div>
+            <h1 id="titulo-catalogo" style="font-size:clamp(24px,3.4vw,34px)">Catálogo</h1>
+            <p>Precios y pedidos directamente en el local.</p>
+          </div>
+          <div class="segmentado" role="group" aria-label="Línea" id="filtro-linea">
+            <button type="button" data-valor="Todas" aria-pressed="true">Todas</button>
+            <button type="button" data-valor="Bicicleta" aria-pressed="false">Bicicletas</button>
+            <button type="button" data-valor="Moto" aria-pressed="false">Motos</button>
+          </div>
+        </div>
+
+        <div class="buscadores-catalogo" role="search">
+          <div class="buscador">
+            <label for="buscar-texto" class="solo-lector">Buscar por descripción</label>
+            <input id="buscar-texto" type="search" placeholder="Buscar por descripción" autocomplete="off">
+            <button class="lupa" type="button" aria-label="Buscar por descripción"></button>
+          </div>
+          <div class="buscador">
+            <label for="buscar-referencia" class="solo-lector">Buscar por referencia</label>
+            <input id="buscar-referencia" type="search" placeholder="Buscar por referencia" autocomplete="off">
+            <button class="lupa" type="button" aria-label="Buscar por referencia"></button>
+          </div>
+        </div>
+
+        <div class="layout-catalogo">
+          <aside class="sidebar-filtros panel-lateral" id="sidebar-filtros" aria-label="Filtros">
+            <div class="sidebar-cabecera">
+              <h2 style="font-size:16px">Filtros</h2>
+              <button type="button" class="boton-icono" id="cerrar-filtros" aria-label="Cerrar filtros"></button>
+            </div>
+            <div class="tarjeta bloque-filtro">
+              <h3>Disponibilidad</h3>
+              <div class="segmentado" role="group" aria-label="Existencia" id="filtro-existencia">
+                <button type="button" data-valor="con" aria-pressed="true">Con existencia</button>
+                <button type="button" data-valor="todos" aria-pressed="false">Todos</button>
+              </div>
+            </div>
+            <div class="tarjeta bloque-filtro">
+              <h3>Filtrar por</h3>
+              <div class="campo"><label for="filtro-categoria">Categoría</label><select id="filtro-categoria" class="entrada" data-filtro="categoria"></select></div>
+              <div class="campo"><label for="filtro-marca">Marca</label><select id="filtro-marca" class="entrada" data-filtro="marca"></select></div>
+              <div class="campo"><label for="filtro-color">Color</label><select id="filtro-color" class="entrada" data-filtro="color"></select></div>
+              <div class="campo"><label for="filtro-talla">Talla</label><select id="filtro-talla" class="entrada" data-filtro="talla"></select></div>
+            </div>
+            <div class="tarjeta bloque-filtro">
+              <h3>¿Para qué bici o moto?</h3>
+              <div class="campo"><label for="filtro-compat">Compatibilidad</label><select id="filtro-compat" class="entrada" data-filtro="compat"></select></div>
+            </div>
+            <div class="tarjeta bloque-filtro">
+              <label class="interruptor"><input type="checkbox" id="permitir-varias"><span class="pista" aria-hidden="true"></span>Permitir varias abiertas</label>
+              <button type="button" class="boton boton-secundario boton-pequeno" id="limpiar-filtros">Limpiar filtros</button>
+            </div>
+          </aside>
+          <div class="fondo-panel" id="fondo-panel"></div>
+
+          <div>
+            <div class="barra-resultados">
+              <div class="grupo">
+                <button type="button" class="boton boton-secundario boton-pequeno boton-filtros-movil" id="abrir-filtros" aria-controls="sidebar-filtros">Filtros</button>
+                <span class="contador-resultados" id="contador-resultados" aria-live="polite"></span>
+                <button type="button" class="boton boton-secundario boton-pequeno boton-escanear" id="escanear-catalogo">Escanear</button>
+              </div>
+              <div class="grupo">
+                <label for="orden" class="etiqueta">Ordenar</label>
+                <select id="orden" class="entrada" style="width:auto">
+                  <option value="az">Nombre A-Z</option>
+                  <option value="za">Nombre Z-A</option>
+                  <option value="disponibilidad">Disponibilidad</option>
+                </select>
+              </div>
+            </div>
+            <div class="lista-productos" id="lista-catalogo"></div>
+            <div class="cargar-mas"><button type="button" class="boton boton-secundario" id="cargar-mas" hidden>Cargar más</button></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pie-pagina">
+    <div class="contenedor">
+      <span>© <span id="anio"></span> CicloVictoria · Bicicletas, repuestos, accesorios y taller</span>
+      <span style="display:flex;gap:16px;flex-wrap:wrap">
+        <a class="enlace-simple" href="creditos.html">Créditos de imágenes</a>
+        <a class="enlace-simple" href="login.html">Acceso administradores</a>
+      </span>
+    </div>
+  </footer>
+
+  <!-- SheetJS: solo se usa si no hay datos guardados y hay que leer el Excel -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <!-- html5-qrcode: escáner de respaldo si el navegador no tiene BarcodeDetector -->
+  <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script type="module" src="js/catalogo.js"></script>
+</body>
+</html>
